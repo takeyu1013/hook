@@ -44,17 +44,45 @@ const TextInputWithFocusButton = () => {
   )
 };
 
-const MouseTracker = () => {
-  const [x, setX] = useState(0);
-  const [y, setY] = useState(0);
+type Position = {
+  x: number,
+  y: number
+};
+
+type CatProps = {
+  mouse: Position
+};
+
+const Cat = (props: CatProps) => {
+  const mouse = props.mouse;
+  return (
+    <img src="https://developer.mozilla.org/static/img/favicon144.png" style={{ position: 'absolute', left: mouse.x, top: mouse.y }} />
+  );
+};
+
+type MouseProps = {
+  render(state: Position): React.ReactNode,
+};
+
+const Mouse = (props: MouseProps) => {
+  const [position, setPosition] = useState({ x: 0, y: 0 });
   const handleMouseMove = (event: React.MouseEvent) => {
-    setX(event.clientX);
-    setY(event.clientY);
+    setPosition({ x: event.clientX, y: event.clientY });
   };
   return (
     <div style={{ height: '100vh' }} onMouseMove={handleMouseMove}>
+      {props.render(position)}
+    </div>
+  );
+};
+
+const MouseTracker = () => {
+  return (
+    <div>
       <h1>Move the mouse around!</h1>
-      <p>The current mouse position is ({x}, {y})</p>
+      <Mouse render={(mouse: any) => (
+        <Cat mouse={mouse} />
+      )} />
     </div>
   );
 };
