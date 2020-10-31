@@ -1,4 +1,4 @@
-import React, { useCallback, useContext, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useRef, useState } from 'react';
 import ReactDOM from 'react-dom';
 
 const themes = {
@@ -56,7 +56,7 @@ type CatProps = {
 const Cat = (props: CatProps) => {
   const mouse = props.mouse;
   return (
-    <img src="https://developer.mozilla.org/static/img/favicon144.png" style={{ position: 'absolute', left: mouse.x, top: mouse.y }} />
+    <img src="https://developer.mozilla.org/static/img/favicon144.png" alt="mouse" style={{ position: 'absolute', left: mouse.x, top: mouse.y }} />
   );
 };
 
@@ -87,6 +87,47 @@ const MouseTracker = () => {
   );
 };
 
+const CommonList = () => {
+  const [comments, setComments] = useState([{ id: 0, value: 'comment' }]);
+
+  const handleChange = () => {
+    setComments([...comments, { id: comments.length, value: 'changed comment' }]);
+  };
+
+  return (
+    <div>
+      <button onClick={handleChange}>add comment</button>
+      <ul>
+        {comments.map((comment: { id: number, value: string }) => (
+          <li>{comment.value}(id: {comment.id})</li>
+        ))}
+      </ul>
+    </div>
+  );
+};
+
+// const logProps = (WrappedComponent: any) => {
+//   return () => {
+//     type Props = {};
+//     useEffect((prevProps?: Props) => {
+//       console.log(prevProps);
+//       console.log();
+//     });
+//     return (
+//       <WrappedComponent />
+//     );
+//   };
+// };
+
+type ModalProps = {
+  children: string
+};
+
+const Modal: React.FC<ModalProps> = (props) => {
+  const element = document.createElement('div');
+  return ReactDOM.createPortal(props.children, element);
+};
+
 const App = () => {
   return (
     <div>
@@ -95,6 +136,7 @@ const App = () => {
       </ThemeContext.Provider>
       <TextInputWithFocusButton />
       <MouseTracker />
+      <CommonList />
     </div>
   );
 };
@@ -103,3 +145,7 @@ ReactDOM.render(
   <App />,
   document.getElementById('root')
 );
+
+import('./math').then(math => {
+  console.log(math.add(16, 23));
+});
